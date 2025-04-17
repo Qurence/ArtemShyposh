@@ -1,15 +1,14 @@
-
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Download } from "lucide-react";
 import SimpleLaptopSection from "@/components/SimpleLaptopSection";
 
 // Simple typewriter effect
-const TypewriterText = ({ text }: { text: string }) => {
+const TypewriterText = ({ text }) => {
   const [displayText, setDisplayText] = useState("");
   const [index, setIndex] = useState(0);
   const [reverse, setReverse] = useState(false);
-  
+
   useEffect(() => {
     const timer = setTimeout(() => {
       if (!reverse) {
@@ -28,16 +27,16 @@ const TypewriterText = ({ text }: { text: string }) => {
         }
       }
     }, 100);
-    
+
     return () => clearTimeout(timer);
   }, [index, reverse, text]);
-  
+
   return (
     <span className="inline-block relative">
       {displayText}
-      <span 
+      <span
         className="absolute right-[-4px] top-0 h-full w-[2px] bg-theme-accent"
-        style={{ 
+        style={{
           animation: "blink 0.75s step-end infinite",
           opacity: index === text.length && !reverse ? 0 : 1,
         }}
@@ -67,7 +66,7 @@ const SimpleHero = () => {
         </div>
 
         {/* Right Column - Laptop Visualization */}
-        <div className="w-full max-w-[320px] sm:max-w-[400px] md:max-w-none md:w-1/2 h-full md:h-[800px] relative">
+        <div className="w-full md:w-1/2 h-[300px] sm:h-[500px] md:h-[800px] relative">
           <SimpleLaptopSection />
         </div>
       </div>

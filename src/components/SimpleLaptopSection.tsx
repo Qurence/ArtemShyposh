@@ -7,7 +7,7 @@ const SimpleLaptopSection = () => {
   const mountRef = useRef(null);
   const animationRef = useRef(null);
   const floatingRef = useRef(0);
-  const objectRef = useRef(null); // Для хранения объекта
+  const objectRef = useRef(null);
 
   useEffect(() => {
     const scene = new THREE.Scene();
@@ -16,7 +16,7 @@ const SimpleLaptopSection = () => {
     let height = container.clientHeight;
 
     const camera = new THREE.PerspectiveCamera(
-      75,
+      90, // Увеличенный FOV
       width / height,
       0.1,
       1000
@@ -51,7 +51,7 @@ const SimpleLaptopSection = () => {
       "public/assets/MacBook.glb",
       (gltf) => {
         objectRef.current = gltf.scene;
-        updateObjectScaleAndCamera(); // Устанавливаем начальный масштаб и камеру
+        updateObjectScaleAndCamera();
         objectRef.current.rotation.set(0, 4, 0);
         objectRef.current.traverse((child) => {
           if (child.isMesh) {
@@ -94,13 +94,18 @@ const SimpleLaptopSection = () => {
       const aspect = width / height;
 
       // Адаптивный масштаб объекта
-      const scale = width < 640 ? 1.0 : 1.0; // Уменьшаем масштаб для мобильных
+      let scale = 1.0;
+      if (width < 640) {
+        scale = 0.8;
+      } else if (width < 1024) {
+        scale = 0.9;
+      }
       if (objectRef.current) {
-        objectRef.current.scale.set(scale, scale, scale); // Унифицированный масштаб
+        objectRef.current.scale.set(scale, scale, scale);
       }
 
       // Адаптивное положение камеры
-      const distance = width < 640 ? 6 : 5; // Ближе для десктопа, дальше для мобильных
+      const distance = width < 640 ? 4 : 4.5;
       camera.position.set(0, 0, distance);
       camera.aspect = aspect;
       camera.updateProjectionMatrix();
@@ -114,7 +119,7 @@ const SimpleLaptopSection = () => {
       animationRef.current = requestAnimationFrame(animate);
       floatingRef.current += 0.02;
       if (objectRef.current) {
-        objectRef.current.position.y = -1.5 + Math.sin(floatingRef.current) * 0.05;
+        objectRef.current.position.y = -1 + Math.sin(floatingRef.current) * 0.05;
       }
       controls.update();
       renderer.render(scene, camera);
@@ -139,7 +144,7 @@ const SimpleLaptopSection = () => {
   return (
     <div
       ref={mountRef}
-      className="w-full max-w-[1200px] h-[300px] sm:h-[500px] md:h-[700px] flex items-center justify-center overflow-visible mx-auto"
+      className="w-full h-[300px] sm:h-[500px] md:h-[700px] flex items-center justify-center mx-auto"
     />
   );
 };
