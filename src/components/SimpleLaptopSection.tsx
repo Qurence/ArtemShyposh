@@ -2,12 +2,16 @@ import { useEffect, useRef } from "react";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
+import gsap from "gsap";
 
 const SimpleLaptopSection = () => {
   const mountRef = useRef(null);
   const animationRef = useRef(null);
   const floatingRef = useRef(0);
   const objectRef = useRef(null);
+  const controlsRef = useRef(null);
+  const isDraggingRef = useRef(false);
+  const currentAzimuthRef = useRef({ value: 0 }); // Объект для GSAP
 
   useEffect(() => {
     const scene = new THREE.Scene();
@@ -15,12 +19,7 @@ const SimpleLaptopSection = () => {
     let width = container.clientWidth;
     let height = container.clientHeight;
 
-    const camera = new THREE.PerspectiveCamera(
-      90, // Увеличенный FOV
-      width / height,
-      0.1,
-      1000
-    );
+    const camera = new THREE.PerspectiveCamera(90, width / height, 0.1, 1000);
 
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     renderer.setSize(width, height);
@@ -78,6 +77,7 @@ const SimpleLaptopSection = () => {
 
     // Управление камерой
     const controls = new OrbitControls(camera, renderer.domElement);
+    controlsRef.current = controls;
     controls.enableDamping = true;
     controls.dampingFactor = 0.03;
     controls.enableZoom = false;
@@ -87,13 +87,63 @@ const SimpleLaptopSection = () => {
     controls.minPolarAngle = Math.PI / 2;
     controls.maxPolarAngle = Math.PI / 2;
 
+    // Начальный угол
+    currentAzimuthRef.current.value = controls.getAzimuthalAngle();
+
+    // Отслеживание взаимодействия с мышью
+    controls.addEventListener("start", () => {
+      isDraggingRef.current = true;
+      // console.log("Начало перетаскивания");
+    });
+
+    controls.addEventListener("end", () => {
+      isDraggingRef.current = false;
+      // console.log("Конец перетаскивания, возврат к начальным углам");
+      // Останавливаем предыдущую анимацию
+      gsap.killTweensOf(currentAzimuthRef.current);
+      // Обновляем текущий угол перед новой анимацией
+      currentAzimuthRef.current.value = controls.getAzimuthalAngle();
+      // Анимация возврата с GSAP
+      gsap.to(currentAzimuthRef.current, {
+        value: 0, // Начальный azimuth
+        duration: 1.8, // Длительность анимации
+        ease: "elastic.out(1, 0.3)", // Смягчение
+        overwrite: "auto", // Автоматически управляет конфликтами анимаций
+        onUpdate: () => {
+          if (controlsRef.current && !isDraggingRef.current) {
+            // Обновляем угол в OrbitControls
+            const distance = controlsRef.current.getDistance();
+            const azimuth = THREE.MathUtils.clamp(
+              currentAzimuthRef.current.value,
+              controls.minAzimuthAngle,
+              controls.maxAzimuthAngle
+            );
+            controlsRef.current.object.position.set(
+              distance * Math.sin(azimuth),
+              0,
+              distance * Math.cos(azimuth)
+            );
+            controlsRef.current.object.lookAt(controlsRef.current.target);
+            // Логирование
+            // console.log({
+            //   isDragging: isDraggingRef.current,
+            //   currentAzimuth: currentAzimuthRef.current.value,
+            //   cameraPosition: controlsRef.current.object.position.toArray(),
+            // });
+          }
+        },
+        onComplete: () => {
+          console.log("Анимация возврата завершена");
+        },
+      });
+    });
+
     // Функция для обновления масштаба объекта и положения камеры
     const updateObjectScaleAndCamera = () => {
       width = container.clientWidth;
       height = container.clientHeight;
       const aspect = width / height;
 
-      // Адаптивный масштаб объекта
       let scale = 1.0;
       if (width < 640) {
         scale = 0.8;
@@ -104,13 +154,11 @@ const SimpleLaptopSection = () => {
         objectRef.current.scale.set(scale, scale, scale);
       }
 
-      // Адаптивное положение камеры
       const distance = width < 640 ? 4 : 4.5;
       camera.position.set(0, 0, distance);
       camera.aspect = aspect;
       camera.updateProjectionMatrix();
 
-      // Обновляем размер рендерера
       renderer.setSize(width, height);
     };
 
@@ -121,6 +169,7 @@ const SimpleLaptopSection = () => {
       if (objectRef.current) {
         objectRef.current.position.y = -1 + Math.sin(floatingRef.current) * 0.05;
       }
+
       controls.update();
       renderer.render(scene, camera);
     };
