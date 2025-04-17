@@ -116,6 +116,10 @@
   h1, h2, h3, h4, h5, h6 {
     @apply font-sans font-bold;
   }
+
+  .text-shadow-accent {
+    text-shadow: 2px 2px 4px var(--theme-accent);
+  }
 }
 
 @layer utilities {

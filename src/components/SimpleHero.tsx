@@ -67,7 +67,7 @@ const SimpleHero = () => {
         </div>
 
         {/* Right Column - Laptop Visualization */}
-        <div className="w-full md:w-1/2 h-[400px] md:h-[500px] relative">
+        <div className="w-full md:w-1/2 h-[600px] md:h-[500px] relative ">
           <SimpleLaptopSection />
         </div>
       </div>
