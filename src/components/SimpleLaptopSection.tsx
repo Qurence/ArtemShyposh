@@ -9,30 +9,46 @@ const SimpleLaptopSection = () => {
   const floatingRef = useRef(0);
 
   useEffect(() => {
-    // Настройка сцены
     const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
 
+    const camera = new THREE.PerspectiveCamera(
+      75,
+      window.innerWidth / window.innerHeight,
+      0.1,
+      1000
+    );
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     const container = mountRef.current;
-    renderer.setSize(container.clientWidth, container.clientHeight);
+
+    const width = container.clientWidth;
+    const height = container.clientHeight;
+
+    renderer.setSize(width, height);
     renderer.setPixelRatio(window.devicePixelRatio);
     renderer.outputColorSpace = THREE.SRGBColorSpace;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     container.appendChild(renderer.domElement);
 
     // Освещение
-    const ambientLight = new THREE.AmbientLight(0xffffff, 1.5); // Увеличенная интенсивность
-    scene.add(ambientLight);
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 1.5);
-    directionalLight.position.set(5, 5, 5); // Свет спереди
-    scene.add(directionalLight);
-    const backLight = new THREE.DirectionalLight(0xffffff, 0.8); // Свет сзади
-    backLight.position.set(-5, 0, -5);
-    scene.add(backLight);
-    const bottomLight = new THREE.DirectionalLight(0xffffff, 0.5); // Свет снизу
-    bottomLight.position.set(0, -5, 0);
-    scene.add(bottomLight);
+    scene.add(new THREE.AmbientLight(0xffffff, 0.5));
+
+    const keyLight = new THREE.DirectionalLight(0xffffff, 1.0);
+    keyLight.position.set(5, 5, 5);
+    keyLight.castShadow = true;
+    scene.add(keyLight);
+
+    const fillLight = new THREE.DirectionalLight(0xffffff, 0.3);
+    fillLight.position.set(-5, 2, 5);
+    scene.add(fillLight);
+
+    const rimLight = new THREE.DirectionalLight(0xffffff, 0.4);
+    rimLight.position.set(0, 3, -5);
+    scene.add(rimLight);
+
+    const hemiLight = new THREE.HemisphereLight(0xffffff, 0x444444, 0.6);
+    hemiLight.position.set(0, 20, 0);
+    scene.add(hemiLight);
 
     // Загрузка модели
     let object;
@@ -41,58 +57,73 @@ const SimpleLaptopSection = () => {
       "public/assets/MacBook.glb",
       (gltf) => {
         object = gltf.scene;
-        object.scale.set(1.3, 1.3, 1.3);
+        // Адаптивный масштаб в зависимости от ширины экрана
+        const isMobile = window.innerWidth < 720;
+        // object.scale.set(
+        //   isMobile ? 1.0 : 2,
+        //   isMobile ? 1.1 : 1.5,
+        //   isMobile ? 1.0 : 2
+        // );
+        object.scale.set(2, 1.5, 2);
+
         object.rotation.set(0.1, 3.7, -0.1);
-        // Обход материалов для проверки и настройки
+
         object.traverse((child) => {
           if (child.isMesh) {
-            console.log("Материал:", child.material.name, child.material);
-            // Проверка текстур
             if (!child.material.map) {
               console.log("Текстура отсутствует для:", child.material.name);
             }
-            // Поддержка прозрачности
             if (child.material.opacity < 1 || child.material.alphaTest > 0) {
               child.material.transparent = true;
             }
-            // Пересчет нормалей для корректного освещения
             child.geometry.computeVertexNormals();
           }
         });
+
         scene.add(object);
       },
       undefined,
       (error) => {
         console.error("Ошибка загрузки модели:", error);
-        // Заглушка в случае ошибки
         const geometry = new THREE.BoxGeometry(1, 1, 1);
-        scene.add(object);
+        const material = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+        const fallbackObject = new THREE.Mesh(geometry, material);
+        scene.add(fallbackObject);
       }
     );
 
-    // Позиция камеры
-    camera.position.set(0, 0, 5);
+    // Камера: адаптация под мобильные
+    if (window.innerWidth < 640) {
+      camera.position.set(0, 0, 12);
+    } else {
+      camera.position.set(0, 0, 10);
+    }
+    
 
     // Управление камерой
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
-    controls.dampingFactor = 0.05;
-    controls.enableZoom = true;
+    controls.dampingFactor = 0.03;
+    controls.enableZoom = false;
     controls.enablePan = false;
 
-    // Анимация
+    controls.minAzimuthAngle = -Math.PI / 6;
+    controls.maxAzimuthAngle = Math.PI / 6;
+
+    controls.minPolarAngle = Math.PI / 2;
+    controls.maxPolarAngle = Math.PI / 2;
+
     const animate = () => {
       animationRef.current = requestAnimationFrame(animate);
       floatingRef.current += 0.05;
       if (object) {
-        object.position.y = Math.sin(floatingRef.current) * 0.2; // Плавающая анимация
+        object.position.y = -1.5 + Math.sin(floatingRef.current) * 0.05;
       }
       controls.update();
       renderer.render(scene, camera);
     };
     animate();
 
-    // Обработка изменения размера
     const handleResize = () => {
       const width = container.clientWidth;
       const height = container.clientHeight;
@@ -102,7 +133,6 @@ const SimpleLaptopSection = () => {
     };
     window.addEventListener("resize", handleResize);
 
-    // Очистка при размонтировании
     return () => {
       cancelAnimationFrame(animationRef.current);
       window.removeEventListener("resize", handleResize);
@@ -114,7 +144,7 @@ const SimpleLaptopSection = () => {
   return (
     <div
       ref={mountRef}
-      className="w-full h-[500px] flex items-center justify-center"
+      className="w-full max-w-[320px] sm:max-w-[480px] md:max-w-none h-[350px] sm:h-[500px] md:h-[700px] flex items-center justify-center"
     />
   );
 };
