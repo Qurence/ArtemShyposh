@@ -7,23 +7,22 @@ const SimpleLaptopSection = () => {
   const mountRef = useRef(null);
   const animationRef = useRef(null);
   const floatingRef = useRef(0);
+  const objectRef = useRef(null); // Для хранения объекта
 
   useEffect(() => {
     const scene = new THREE.Scene();
+    const container = mountRef.current;
+    let width = container.clientWidth;
+    let height = container.clientHeight;
 
     const camera = new THREE.PerspectiveCamera(
       75,
-      window.innerWidth / window.innerHeight,
+      width / height,
       0.1,
       1000
     );
 
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-    const container = mountRef.current;
-
-    const width = container.clientWidth;
-    const height = container.clientHeight;
-
     renderer.setSize(width, height);
     renderer.setPixelRatio(window.devicePixelRatio);
     renderer.outputColorSpace = THREE.SRGBColorSpace;
@@ -32,46 +31,32 @@ const SimpleLaptopSection = () => {
 
     // Освещение
     scene.add(new THREE.AmbientLight(0xffffff, 0.5));
-
     const keyLight = new THREE.DirectionalLight(0xffffff, 1.0);
     keyLight.position.set(5, 5, 5);
     keyLight.castShadow = true;
     scene.add(keyLight);
-
     const fillLight = new THREE.DirectionalLight(0xffffff, 0.3);
     fillLight.position.set(-5, 2, 5);
     scene.add(fillLight);
-
     const rimLight = new THREE.DirectionalLight(0xffffff, 0.4);
     rimLight.position.set(0, 3, -5);
     scene.add(rimLight);
-
     const hemiLight = new THREE.HemisphereLight(0xffffff, 0x444444, 0.6);
     hemiLight.position.set(0, 20, 0);
     scene.add(hemiLight);
 
     // Загрузка модели
-    let object;
     const loader = new GLTFLoader();
     loader.load(
       "public/assets/MacBook.glb",
       (gltf) => {
-        object = gltf.scene;
-        // Адаптивный масштаб в зависимости от ширины экрана
-        const isMobile = window.innerWidth < 720;
-        // object.scale.set(
-        //   isMobile ? 1.0 : 2,
-        //   isMobile ? 1.1 : 1.5,
-        //   isMobile ? 1.0 : 2
-        // );
-        object.scale.set(2, 1.5, 2);
-
-        object.rotation.set(0.1, 3.7, -0.1);
-
-        object.traverse((child) => {
+        objectRef.current = gltf.scene;
+        updateObjectScaleAndCamera(); // Устанавливаем начальный масштаб и камеру
+        objectRef.current.rotation.set(0, 4, 0);
+        objectRef.current.traverse((child) => {
           if (child.isMesh) {
             if (!child.material.map) {
-              console.log("Текстура отсутствует для:", child.material.name);
+              // console.log("Текстура отсутствует для:", child.material.name);
             }
             if (child.material.opacity < 1 || child.material.alphaTest > 0) {
               child.material.transparent = true;
@@ -79,8 +64,7 @@ const SimpleLaptopSection = () => {
             child.geometry.computeVertexNormals();
           }
         });
-
-        scene.add(object);
+        scene.add(objectRef.current);
       },
       undefined,
       (error) => {
@@ -92,47 +76,58 @@ const SimpleLaptopSection = () => {
       }
     );
 
-    // Камера: адаптация под мобильные
-    if (window.innerWidth < 640) {
-      camera.position.set(0, 0, 12);
-    } else {
-      camera.position.set(0, 0, 10);
-    }
-    
-
     // Управление камерой
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
     controls.dampingFactor = 0.03;
     controls.enableZoom = false;
     controls.enablePan = false;
-
-    controls.minAzimuthAngle = -Math.PI / 6;
-    controls.maxAzimuthAngle = Math.PI / 6;
-
+    controls.minAzimuthAngle = -Math.PI / 5;
+    controls.maxAzimuthAngle = Math.PI / 5;
     controls.minPolarAngle = Math.PI / 2;
     controls.maxPolarAngle = Math.PI / 2;
 
+    // Функция для обновления масштаба объекта и положения камеры
+    const updateObjectScaleAndCamera = () => {
+      width = container.clientWidth;
+      height = container.clientHeight;
+      const aspect = width / height;
+
+      // Адаптивный масштаб объекта
+      const scale = width < 640 ? 1.0 : 1.0; // Уменьшаем масштаб для мобильных
+      if (objectRef.current) {
+        objectRef.current.scale.set(scale, scale, scale); // Унифицированный масштаб
+      }
+
+      // Адаптивное положение камеры
+      const distance = width < 640 ? 6 : 5; // Ближе для десктопа, дальше для мобильных
+      camera.position.set(0, 0, distance);
+      camera.aspect = aspect;
+      camera.updateProjectionMatrix();
+
+      // Обновляем размер рендерера
+      renderer.setSize(width, height);
+    };
+
+    // Анимация
     const animate = () => {
       animationRef.current = requestAnimationFrame(animate);
-      floatingRef.current += 0.05;
-      if (object) {
-        object.position.y = -1.5 + Math.sin(floatingRef.current) * 0.05;
+      floatingRef.current += 0.02;
+      if (objectRef.current) {
+        objectRef.current.position.y = -1.5 + Math.sin(floatingRef.current) * 0.05;
       }
       controls.update();
       renderer.render(scene, camera);
     };
     animate();
 
+    // Обработчик изменения размера
     const handleResize = () => {
-      const width = container.clientWidth;
-      const height = container.clientHeight;
-      renderer.setSize(width, height);
-      camera.aspect = width / height;
-      camera.updateProjectionMatrix();
+      updateObjectScaleAndCamera();
     };
     window.addEventListener("resize", handleResize);
 
+    // Очистка
     return () => {
       cancelAnimationFrame(animationRef.current);
       window.removeEventListener("resize", handleResize);
@@ -144,7 +139,7 @@ const SimpleLaptopSection = () => {
   return (
     <div
       ref={mountRef}
-      className="w-full max-w-[320px] sm:max-w-[480px] md:max-w-none h-[350px] sm:h-[500px] md:h-[700px] flex items-center justify-center"
+      className="w-full max-w-[1200px] h-[300px] sm:h-[500px] md:h-[700px] flex items-center justify-center overflow-hidden mx-auto"
     />
   );
 };

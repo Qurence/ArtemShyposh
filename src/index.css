@@ -104,6 +104,18 @@
   }
 }
 
+@font-face {
+  font-family: 'Arizonia';
+  src: url('/fonts/Arizonia-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap; 
+}
+
+.custom-font {
+  font-family: 'Arizonia', cursive; 
+}
+
 @layer base {
   * {
     @apply border-border;
