@@ -48,7 +48,7 @@ const SimpleLaptopSection = () => {
     // Загрузка модели
     const loader = new GLTFLoader();
     loader.load(
-      "/assets/MacBook.glb",
+      "assets/MacBook.glb",
       (gltf) => {
         objectRef.current = gltf.scene;
         updateObjectScaleAndCamera();
