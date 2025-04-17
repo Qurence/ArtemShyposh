@@ -139,7 +139,7 @@ const SimpleLaptopSection = () => {
   return (
     <div
       ref={mountRef}
-      className="w-full max-w-[1200px] h-[300px] sm:h-[500px] md:h-[700px] flex items-center justify-center overflow-hidden mx-auto"
+      className="w-full max-w-[1200px] h-[300px] sm:h-[500px] md:h-[700px] flex items-center justify-center overflow-visible mx-auto"
     />
   );
 };
