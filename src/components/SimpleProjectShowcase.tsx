@@ -8,7 +8,7 @@ const projects: ProjectProps[] = [
   {
     title: "UList",
     description: "An application for creating shared lists where you can add people and update lists synchronously in real time.",
-    image: "public/projects/image/demo1.png",
+    image: "/projects/image/demo1.png",
     link: "https://qurence.github.io/ULists/",
   },
   {
