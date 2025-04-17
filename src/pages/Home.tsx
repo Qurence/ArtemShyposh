@@ -19,7 +19,7 @@ const Home = () => {
             
             <div className="mt-12 text-center">
               <a 
-                href="/showcase"
+                href="#/showcase"
                 className="inline-block border border-theme-accent text-theme-accent px-6 py-3 rounded-md hover:bg-theme-accent hover:text-background transition-all duration-300"
               >
                 View All Projects
