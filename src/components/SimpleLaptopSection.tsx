@@ -170,7 +170,7 @@ const SimpleLaptopSection = () => {
         objectRef.current.position.y = -1 + Math.sin(floatingRef.current) * 0.05;
       }
       // Testind update
-      controls.update();
+      // controls.update();
       renderer.render(scene, camera);
     };
     animate();
