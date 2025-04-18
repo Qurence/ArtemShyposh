@@ -79,7 +79,7 @@ const SimpleLaptopSection = () => {
     const controls = new OrbitControls(camera, renderer.domElement);
     controlsRef.current = controls;
     controls.enableDamping = true;
-    controls.dampingFactor = 0.03;
+    controls.dampingFactor = 0.05;
     controls.enableZoom = false;
     controls.enablePan = false;
     controls.minAzimuthAngle = -Math.PI / 5;
@@ -125,11 +125,11 @@ const SimpleLaptopSection = () => {
             );
             controlsRef.current.object.lookAt(controlsRef.current.target);
             // Логирование
-            // console.log({
-            //   isDragging: isDraggingRef.current,
-            //   currentAzimuth: currentAzimuthRef.current.value,
-            //   cameraPosition: controlsRef.current.object.position.toArray(),
-            // });
+            console.log({
+              isDragging: isDraggingRef.current,
+              currentAzimuth: currentAzimuthRef.current.value,
+              cameraPosition: controlsRef.current.object.position.toArray(),
+            });
           }
         },
         onComplete: () => {
@@ -169,7 +169,7 @@ const SimpleLaptopSection = () => {
       if (objectRef.current) {
         objectRef.current.position.y = -1 + Math.sin(floatingRef.current) * 0.05;
       }
-
+      // Testind update
       controls.update();
       renderer.render(scene, camera);
     };
