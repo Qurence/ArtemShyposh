@@ -10,6 +10,7 @@ export type ProjectModalProps = {
   description: string;
   image: string;
   link: string;
+  technologies: { name: string; color: string }[];
   className?: string;
 };
 
@@ -20,6 +21,7 @@ const ProjectModal = ({
   description,
   image,
   link,
+  technologies,
   className,
 }: ProjectModalProps) => {
   useEffect(() => {
@@ -65,9 +67,20 @@ const ProjectModal = ({
         <div className="p-6">
           <h2 className="text-2xl font-bold mb-4">{title}</h2>
           <p className="text-muted-foreground mb-6">{description}</p>
+          <div className="flex flex-wrap gap-2 mb-6">
+            {technologies.map((tech, index) => (
+              <span
+                key={index}
+                className="px-3 py-1 rounded-full text-sm"
+                style={{ backgroundColor: tech.color }}
+              >
+                {tech.name}
+              </span>
+            ))}
+          </div>
           <Button variant="accent" asChild>
             <a href={link} target="_blank" rel="noopener noreferrer">
-              Посмотреть проект
+              View Project
             </a>
           </Button>
         </div>
