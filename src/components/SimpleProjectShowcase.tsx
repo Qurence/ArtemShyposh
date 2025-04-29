@@ -3,12 +3,12 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import SimpleProjectCard from "@/components/SimpleProjectCard";
 import { ProjectProps, projects } from "@/const/projects";
 
-const SimpleProjectShowcase = ({ limit }: { limit?: number }) => {
+const SimpleProjectShowcase = ({ limit, isShowcase = false }: { limit?: number, isShowcase?: boolean }) => {
   const isMobile = useIsMobile();
   const carouselRef = useRef<HTMLDivElement>(null);
   const displayProjects = limit ? projects.slice(0, limit) : projects;
 
-  if (isMobile) {
+  if (isMobile && !isShowcase) {
     return (
       <div className="w-full overflow-hidden">
         <div
@@ -31,7 +31,7 @@ const SimpleProjectShowcase = ({ limit }: { limit?: number }) => {
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div className={`grid ${isMobile ? 'grid-cols-1' : 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3'} gap-6`}>
       {displayProjects.map((project, index) => (
         <SimpleProjectCard
           key={index}

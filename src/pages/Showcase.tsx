@@ -1,4 +1,3 @@
-
 import Header from "@/components/Header";
 import SimpleProjectShowcase from "@/components/SimpleProjectShowcase";
 
@@ -13,7 +12,7 @@ const Showcase = () => {
             <p className="text-xl text-muted-foreground">A collection of my recent work</p>
           </div>
           
-          <SimpleProjectShowcase />
+          <SimpleProjectShowcase isShowcase={true} />
         </div>
       </main>
     </div>
