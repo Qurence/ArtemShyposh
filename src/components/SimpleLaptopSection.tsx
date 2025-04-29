@@ -65,12 +65,12 @@ const SimpleLaptopSection = () => {
         });
         scene.add(objectRef.current);
 
-        // Анимация появления
-        gsap.fromTo(
-          objectRef.current.scale,
-          { x: 0, y: 0, z: 0 },
-          { x: 1, y: 1, z: 1, duration: 1.5, ease: "power2.out" }
-        );
+        // Убираем анимацию появления
+        // gsap.fromTo(
+        //   objectRef.current.scale,
+        //   { x: 0, y: 0, z: 0 },
+        //   { x: 1, y: 1, z: 1, duration: 1.5, ease: "power2.out" }
+        // );
       },
       undefined,
       (error) => {
@@ -151,11 +151,9 @@ const SimpleLaptopSection = () => {
       height = container.clientHeight;
       const aspect = width / height;
 
-      let scale = 0.9;
+      let scale = 1;
       if (width < 640) {
-        scale = 0.7;
-      } else if (width < 1024) {
-        scale = 1;
+        scale = 0.85;
       }
       if (objectRef.current) {
         objectRef.current.scale.set(scale, scale, scale);
