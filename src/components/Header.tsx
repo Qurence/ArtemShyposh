@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { ThemeToggle } from "@/components/ThemeToggle";
-import { Menu, X } from "lucide-react";
+import { MobileMenu } from "@/components/MobileMenu";
 import { cn } from "@/lib/utils";
 import '../index.css'; 
 
@@ -60,40 +60,14 @@ const Header = () => {
           <ThemeToggle />
         </div>
 
-        {/* Mobile Navigation Toggle */}
+        {/* Mobile Navigation */}
         <div className="flex items-center gap-4 md:hidden">
           <ThemeToggle />
-          <button
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="text-foreground hover:text-theme-accent transition-colors duration-300"
-            aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
-          >
-            {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-          </button>
+          <MobileMenu 
+            isOpen={mobileMenuOpen} 
+            onClose={() => setMobileMenuOpen(!mobileMenuOpen)} 
+          />
         </div>
-      </div>
-
-      {/* Mobile Menu */}
-      <div
-        className={cn(
-          "fixed inset-0 top-[60px] bg-background z-40 transform transition-transform duration-300 md:hidden",
-          mobileMenuOpen ? "translate-x-0" : "translate-x-full"
-        )}
-      >
-        <nav className="flex flex-col items-center justify-center h-full gap-8 text-xl">
-          {navLinks.map((link) => (
-            <Link
-              key={link.name}
-              to={link.path}
-              className={cn(
-                "py-2 px-4 text-foreground hover:text-theme-accent transition-colors duration-300",
-                location.pathname === link.path && "text-theme-accent"
-              )}
-            >
-              {link.name}
-            </Link>
-          ))}
-        </nav>
       </div>
     </header>
   );
