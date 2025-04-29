@@ -1,5 +1,6 @@
 import Header from "@/components/Header";
 import SimpleProjectShowcase from "@/components/SimpleProjectShowcase";
+import Footer from "@/components/Footer";
 
 const Showcase = () => {
   return (
@@ -15,6 +16,7 @@ const Showcase = () => {
           <SimpleProjectShowcase isShowcase={true} />
         </div>
       </main>
+      <Footer />
     </div>
   );
 };

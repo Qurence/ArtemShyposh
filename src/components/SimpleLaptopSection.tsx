@@ -125,16 +125,16 @@ const SimpleLaptopSection = () => {
             );
             controlsRef.current.object.lookAt(controlsRef.current.target);
             // Логирование
-            console.log({
-              isDragging: isDraggingRef.current,
-              currentAzimuth: currentAzimuthRef.current.value,
-              cameraPosition: controlsRef.current.object.position.toArray(),
-            });
+            // console.log({
+            //   isDragging: isDraggingRef.current,
+            //   currentAzimuth: currentAzimuthRef.current.value,
+            //   cameraPosition: controlsRef.current.object.position.toArray(),
+            // });
           }
         },
-        onComplete: () => {
-          console.log("Анимация возврата завершена");
-        },
+        // onComplete: () => {
+        //   console.log("Анимация возврата завершена");
+        // },
       });
     });
 

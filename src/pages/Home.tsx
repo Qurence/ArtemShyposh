@@ -1,7 +1,7 @@
-
 import SimpleHero from "@/components/SimpleHero";
 import SimpleProjectShowcase from "@/components/SimpleProjectShowcase";
 import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 
 const Home = () => {
   return (
@@ -28,6 +28,7 @@ const Home = () => {
           </div>
         </section>
       </main>
+      <Footer />
     </div>
   );
 };

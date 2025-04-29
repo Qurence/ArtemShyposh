@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Eye, MousePointerClick } from "lucide-react";
+import { Eye, Pointer } from "lucide-react";
 import { cn } from "@/lib/utils";
 import ProjectModal from "./ProjectModal";
 import { ProjectProps } from "@/const/projects";
@@ -43,7 +43,7 @@ const SimpleProjectCard = ({
               isHovered ? "lg:opacity-100" : "lg:opacity-0"
             )}
           >
-            <MousePointerClick
+            <Pointer
               className="w-16 h-16 drop-shadow-lg text-white animate-pulse [stroke-width:2px]"
               style={{
                 animationDuration: "1.5s",
