@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { X } from "lucide-react";
+import { Eye, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -81,6 +81,7 @@ const ProjectModal = ({
           </div>
           <Button variant="accent" asChild>
             <a href={link} target="_blank" rel="noopener noreferrer">
+              <Eye size={16} />
               View Project
             </a>
           </Button>
