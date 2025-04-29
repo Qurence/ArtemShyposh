@@ -11,7 +11,7 @@ const SimpleLaptopSection = () => {
   const objectRef = useRef(null);
   const controlsRef = useRef(null);
   const isDraggingRef = useRef(false);
-  const currentAzimuthRef = useRef({ value: 0 }); // Объект для GSAP
+  const currentAzimuthRef = useRef({ value: 0 });
 
   useEffect(() => {
     const scene = new THREE.Scene();
@@ -64,6 +64,13 @@ const SimpleLaptopSection = () => {
           }
         });
         scene.add(objectRef.current);
+
+        // Анимация появления
+        gsap.fromTo(
+          objectRef.current.scale,
+          { x: 0, y: 0, z: 0 },
+          { x: 1, y: 1, z: 1, duration: 1.5, ease: "power2.out" }
+        );
       },
       undefined,
       (error) => {
@@ -193,7 +200,7 @@ const SimpleLaptopSection = () => {
   return (
     <div
       ref={mountRef}
-      className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 min-w-[390px] min-h-[390px] w-[60vw] h-[60vw] max-w-none max-h-none z-0"
+      className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 min-w-[390px] min-h-[390px] w-[50vw] h-[50vw] max-w-none max-h-none z-0"
       style={{overflow: 'visible'}}
     />
   );
