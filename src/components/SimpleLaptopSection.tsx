@@ -144,11 +144,11 @@ const SimpleLaptopSection = () => {
       height = container.clientHeight;
       const aspect = width / height;
 
-      let scale = 1.0;
+      let scale = 0.9;
       if (width < 640) {
-        scale = 0.8;
+        scale = 0.7;
       } else if (width < 1024) {
-        scale = 0.9;
+        scale = 1;
       }
       if (objectRef.current) {
         objectRef.current.scale.set(scale, scale, scale);
@@ -193,7 +193,8 @@ const SimpleLaptopSection = () => {
   return (
     <div
       ref={mountRef}
-      className="w-full h-[300px] sm:h-[500px] md:h-[700px] flex items-center justify-center mx-auto"
+      className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 min-w-[390px] min-h-[390px] w-[60vw] h-[60vw] max-w-none max-h-none z-0"
+      style={{overflow: 'visible'}}
     />
   );
 };
