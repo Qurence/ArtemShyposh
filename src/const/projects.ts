@@ -9,6 +9,18 @@ export interface ProjectProps {
 
 export const projects: ProjectProps[] = [
   {
+    title: "U-Pizza",
+    description: "Modern web application for ordering pizza, built using advanced web development technologies.",
+    image: "assets/u-pizza-img.png",
+    link: "https://u-pizza.vercel.app/",
+    technologies: [
+      { name: "Next.js 14", color: "#477694" },
+      { name: "Prisma ", color: "#5f6cd9" },
+      { name: "Next.js API Routes", color: "#db9534" },
+      { name: "TypeScript", color: "#4a55b8" },
+    ],
+  },
+  {
     title: "UList",
     description: "An application for creating shared lists where you can add people and update lists synchronously in real time.",
     image: "projects/image/demo1.png",
@@ -16,22 +28,10 @@ export const projects: ProjectProps[] = [
     technologies: [
       { name: "React", color: "#61DAFB" },
       { name: "TypeScript", color: "#3178C6" },
-      { name: "Firebase", color: "#FFCA28" },
     ],
   },
   {
-    title: "Task Management App",
-    description: "A collaborative task management application with real-time updates.",
-    image: "https://images.unsplash.com/photo-1488590528505-98d2b5aba04b",
-    link: "#",
-    technologies: [
-      { name: "React", color: "#61DAFB" },
-      { name: "Node.js", color: "#339933" },
-      { name: "MongoDB", color: "#47A248" },
-    ],
-  },
-  {
-    title: "Crypto Dashboard",
+    title: "#Example Project 1",
     description: "Real-time cryptocurrency dashboard with advanced analytics.",
     image: "https://images.unsplash.com/photo-1461749280684-dccba630e2f6",
     link: "#",
@@ -42,7 +42,7 @@ export const projects: ProjectProps[] = [
     ],
   },
   {
-    title: "Social Network",
+    title: "#Example Project 2",
     description: "A social networking platform focusing on privacy and user experience.",
     image: "https://images.unsplash.com/photo-1531297484001-80022131f5a1",
     link: "#",
@@ -53,7 +53,7 @@ export const projects: ProjectProps[] = [
     ],
   },
   {
-    title: "Weather App",
+    title: "#Example Project 3",
     description: "Location-based weather forecast with interactive maps.",
     image: "https://images.unsplash.com/photo-1487058792275-0ad4aaf24ca7",
     link: "#",
@@ -64,7 +64,7 @@ export const projects: ProjectProps[] = [
     ],
   },
   {
-    title: "Fitness Tracker",
+    title: "#Example Project 4",
     description: "Personal fitness tracker with workout plans and progress analytics.",
     image: "https://images.unsplash.com/photo-1498050108023-c5249f4df085",
     link: "#",
