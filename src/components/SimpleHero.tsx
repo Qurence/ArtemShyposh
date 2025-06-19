@@ -158,7 +158,7 @@ const SimpleHero = () => {
             Full-stack Developer
           </p>
           <Button variant="accent" size="lg" asChild>
-            <a href="/ArtemShyposh/cv2.pdf" target="_blank" rel="noopener noreferrer" download>
+            <a href="/ArtemShyposh/cv.pdf" target="_blank" rel="noopener noreferrer" download>
               <Download className="mr-2" />
               Download CV
             </a>

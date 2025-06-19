@@ -4,7 +4,7 @@ const githubUrl = "https://github.com/qurence";
 const linkedinUrl = "https://linkedin.com/in/artem-shyposh-97135a352";
 const telegramUrl = "https://t.me/qurence_dev";
 const email = "shyposhartem@gmail.com";
-const cvUrl = "/cv.pdf";
+const cvUrl = "/ArtemShyposh/cv.pdf";
 
 export default function Footer() {
   return (
