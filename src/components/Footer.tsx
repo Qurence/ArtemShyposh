@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 
 const githubUrl = "https://github.com/qurence";
-const linkedinUrl = "https://www.linkedin.com/in/artem-shyposh/";
+const linkedinUrl = "https://linkedin.com/in/artem-shyposh-97135a352";
 const telegramUrl = "https://t.me/qurence_dev";
 const email = "shyposhartem@gmail.com";
 const cvUrl = "/cv.pdf";

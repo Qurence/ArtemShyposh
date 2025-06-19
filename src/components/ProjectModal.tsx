@@ -74,7 +74,7 @@ const ProjectModal = ({
                 className="px-3 py-1 rounded-full text-sm select-none relative group overflow-visible"
                 style={{ backgroundColor: tech.color }}
               >
-                <span className="relative z-10">{tech.name}</span>
+                <span className="relative z-10 text-white">{tech.name}</span>
                 <div className="absolute -inset-1 rounded-full border-2 border-transparent group-hover:border-theme-accent transition-all duration-300 group-hover:animate-[pulse_1.5s_ease-in-out_infinite]" />
               </span>
             ))}

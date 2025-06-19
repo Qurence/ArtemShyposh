@@ -1,8 +1,12 @@
 import Header from "@/components/Header";
 import SimpleProjectShowcase from "@/components/SimpleProjectShowcase";
 import Footer from "@/components/Footer";
+import { useEffect } from "react";
 
 const Showcase = () => {
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+  }, []);
   return (
     <div className="min-h-screen bg-background">
       <Header />
