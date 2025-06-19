@@ -4,7 +4,7 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import gsap from "gsap";
 
-const SimpleLaptopSection = () => {
+const SimpleLaptopSection = ({ onScreenPosition, containerRef, onModelLoaded }) => {
   const mountRef = useRef(null);
   const animationRef = useRef(null);
   const floatingRef = useRef(0);
@@ -46,12 +46,19 @@ const SimpleLaptopSection = () => {
 
     // Загрузка модели
     const loader = new GLTFLoader();
+    let screenMesh = null;
     loader.load(
       "assets/MacBook.glb",
       (gltf) => {
         objectRef.current = gltf.scene;
         updateObjectScaleAndCamera();
         objectRef.current.rotation.set(0, 4, 0);
+        // Найти mesh экрана
+        gltf.scene.traverse((child) => {
+          if (child instanceof THREE.Mesh && child.name === 'Screen_Glass') {
+            screenMesh = child;
+          }
+        });
         objectRef.current.traverse((child) => {
           if (child.isMesh) {
             if (!child.material.map) {
@@ -64,6 +71,8 @@ const SimpleLaptopSection = () => {
           }
         });
         scene.add(objectRef.current);
+        // === Call onModelLoaded ===
+        if (typeof onModelLoaded === 'function') onModelLoaded();
 
         // Убираем анимацию появления
         // gsap.fromTo(
@@ -174,9 +183,45 @@ const SimpleLaptopSection = () => {
       if (objectRef.current) {
         objectRef.current.position.y = -1 + Math.sin(floatingRef.current) * 0.05;
       }
-      // Testind update
       controls.update();
       renderer.render(scene, camera);
+      // === Передаю transform и размеры экрана ===
+      if (screenMesh && camera && typeof onScreenPosition === 'function') {
+        // Центр экрана
+        const center = new THREE.Vector3();
+        screenMesh.getWorldPosition(center);
+        // Размеры экрана
+        const geometry = screenMesh.geometry;
+        geometry.computeBoundingBox();
+        const bbox = geometry.boundingBox;
+        // 4 угла экрана в локальных координатах
+        const corners = [
+          new THREE.Vector3(bbox.min.x, bbox.max.y, 0), // topLeft
+          new THREE.Vector3(bbox.max.x, bbox.max.y, 0), // topRight
+          new THREE.Vector3(bbox.max.x, bbox.min.y, 0), // bottomRight
+          new THREE.Vector3(bbox.min.x, bbox.min.y, 0), // bottomLeft
+        ];
+        // Перевести в мировые координаты и спроецировать
+        const projected = corners.map(v => {
+          const world = v.clone().applyMatrix4(screenMesh.matrixWorld);
+          world.project(camera);
+          return {
+            x: (world.x + 1) / 2,
+            y: (1 - world.y) / 2,
+          };
+        });
+        // Центр экрана
+        const centerWorld = center.clone().project(camera);
+        onScreenPosition({
+          center: {
+            x: (centerWorld.x + 1) / 2,
+            y: (1 - centerWorld.y) / 2,
+          },
+          corners: projected,
+          matrix: screenMesh.matrixWorld.elements.slice(),
+          currentRotation: controlsRef.current ? controlsRef.current.getAzimuthalAngle() : 0
+        });
+      }
     };
     animate();
 
@@ -197,7 +242,10 @@ const SimpleLaptopSection = () => {
 
   return (
     <div
-      ref={mountRef}
+      ref={el => {
+        mountRef.current = el;
+        if (containerRef) containerRef.current = el;
+      }}
       className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 min-w-[390px] min-h-[390px] w-[50vw] h-[50vw] max-w-none max-h-none z-0"
       style={{overflow: 'visible'}}
     />
