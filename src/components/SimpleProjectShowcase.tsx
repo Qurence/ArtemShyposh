@@ -41,6 +41,19 @@ const SimpleProjectShowcase = ({ limit, isShowcase = false }: { limit?: number, 
     );
   }
 
+  // Для страницы ShowCase на мобильных устройствах: показываем проекты сразу, без анимации появления
+  if (isMobile && isShowcase) {
+    return (
+      <div className="grid grid-cols-1 gap-6">
+        {displayProjects.map((project, index) => (
+          <div key={index}>
+            <SimpleProjectCard {...project} />
+          </div>
+        ))}
+      </div>
+    );
+  }
+
   return (
     <motion.div 
       className={`grid ${isMobile ? 'grid-cols-1' : 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3'} gap-6`}
