@@ -82,22 +82,22 @@ Welcome to my portfolio! Here you will find a showcase of my best projects, skil
 
 ### Parallax Fairy Forest
 - **Description:** A visually rich parallax website featuring a magical forest with animated layers and interactive gallery.
-- **Demo:** [View](projects/project1/index.html)
+- **Demo:** [View](https://qurence.github.io/ArtemShyposh/projects/project1/index.html)
 - **Stack:** HTML, CSS, JavaScript, GSAP
 
 ### Witcher Parallax Slider
 - **Description:** A parallax slider inspired by The Witcher universe, with animated character cards and interactive backgrounds.
-- **Demo:** [View](projects/project2/index.html)
+- **Demo:** [View](https://qurence.github.io/ArtemShyposh/projects/project2/index.html)
 - **Stack:** HTML, CSS, JavaScript, Swiper.js, Particles.js
 
 ### Natural Forest Weather
 - **Description:** A 3D website with a lens effect and animated rain, showcasing a natural forest weather scene.
-- **Demo:** [View](projects/project3/index.html)
+- **Demo:** [View](https://qurence.github.io/ArtemShyposh/projects/project3/index.html)
 - **Stack:** HTML, CSS, JavaScript
 
 ### Hogwarts New Year
 - **Description:** Landing page for a magical New Year event at Hogwarts, with interactive sections and festive design.
-- **Demo:** [View](projects/project4/index.html)
+- **Demo:** [View](https://qurence.github.io/ArtemShyposh/projects/project4/index.html)
 - **Stack:** HTML, CSS, JavaScript
 
 ---
@@ -122,6 +122,3 @@ Full Stack Developer
 - **Backend:** Node.js & Express.js, Python (Flask/FastAPI)
 - **Databases:** PostgreSQL, MongoDB
 - **Tools:** Git & GitHub, VS Code
-
----
-
