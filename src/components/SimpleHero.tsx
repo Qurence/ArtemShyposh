@@ -63,75 +63,55 @@ const SimpleHero = () => {
     const container = containerRef.current;
     const cw = container.offsetWidth;
     const ch = container.offsetHeight;
-    
-    // Calculate center position with responsive offsets
-    let cx = (corners[0].x + corners[1].x + corners[2].x + corners[3].x) / 4;
-    let cy = (corners[0].y + corners[1].y + corners[2].y + corners[3].y) / 4;
-    
-    // Calculate dynamic offset based on screen width
-    const baseOffsetX = 0.23;
-    const baseOffsetY = 0.32;
-    const referenceWidth = 1920;
-    
-    // Calculate scale factor based on current width with adjusted minimum
-    const scaleFactor = Math.min(Math.max(container.clientWidth / referenceWidth, 0.7), 1);
-    
-    // Calculate position adjustment based on screen width
-    const screenWidthRatio = container.clientWidth / referenceWidth;
-    const positionAdjustX = Math.max(0, 1 - screenWidthRatio) * 1.6; // Увеличиваем смещение вправо при уменьшении экрана
-    const positionAdjustY = Math.max(0, 1 - screenWidthRatio) * 1.6;  // Увеличиваем смещение вниз при уменьшении экрана
-    
-    // Apply scaled offset with minimum threshold
-    const dynamicOffsetX = baseOffsetX * scaleFactor;
-    const dynamicOffsetY = baseOffsetY * scaleFactor;
-    
-    // Apply responsive offsets with adjusted ratios and dynamic positioning
-    if (isMobile) {
-      cx -= dynamicOffsetX * (0.30 - positionAdjustX * -0.5);
-      cy -= dynamicOffsetY * (1.1 - positionAdjustY * -0.5);
-    } else if (isTablet) {
-      cx -= dynamicOffsetX * (0.2 - positionAdjustX * -0.6);
-      cy -= dynamicOffsetY * (-1.4 - positionAdjustY * -0.6);
-    } else {
-      cx -= dynamicOffsetX * (1 - positionAdjustX * 0.01);
-      cy -= dynamicOffsetY * (1 - positionAdjustY * 0.01);
-    }
-    
-    // Apply additional position fine-tuning based on width
-    if (container.clientWidth < 480) { // Extra small screens
-      cx += 0.1;
-      cy += 0.15;
-    } else if (container.clientWidth < 768) { // Small screens
-      cx += 0.05;
-      cy += 0.1;
-    }
-    
-    btn.style.left = `${cx * cw}px`;
-    btn.style.top = `${cy * ch}px`;
 
-    // Calculate screen tilt based on corners
+    // Расширенная калибровка смещений для разных устройств
+    let offsetX = 0;
+    let offsetY = 0;
+    const width = window.innerWidth;
+    if (width <= 480) { // extra small
+      offsetX = -0.05;
+      offsetY = -0.25;
+    } else if (width <= 768) { // small
+      offsetX = 0.1;
+      offsetY = -0.25;
+    } else if (width <= 1024) { // medium (tablet)
+      offsetX = -0.04;
+      offsetY = 0.22;
+    } else if (width <= 1440) { // large (desktop)
+      offsetX = -0.02;
+      offsetY = 0.01;
+    } else if (width <= 1700) { // large (desktop)
+      offsetX = -0.08;
+      offsetY = -0.15;
+    } else { // extra large
+      offsetX = -0.16;
+      offsetY = -0.22;
+    }
+
+    // Центр экрана ноутбука
+    const cx = (corners[0].x + corners[1].x + corners[2].x + corners[3].x) / 4;
+    const cy = (corners[0].y + corners[1].y + corners[2].y + corners[3].y) / 4;
+
+    btn.style.left = `${(cx + offsetX) * cw}px`;
+    btn.style.top = `${(cy + offsetY) * ch}px`;
+
+    // Логика поворота, перспективы и масштабирования кнопки
     const topEdge = Math.abs(corners[0].y - corners[1].y);
     const bottomEdge = Math.abs(corners[2].y - corners[3].y);
     const tiltFactor = (bottomEdge - topEdge) * 2;
 
-    // Enhanced perspective settings
     const maxRotation = 30;
     const laptopRotationDegrees = (currentRotation * 180) / Math.PI;
     const perspectiveMultiplier = laptopRotationDegrees > 0 ? -1 : 1;
     const maxPerspectiveAngle = 20;
     const dynamicPerspectiveAngle = (Math.abs(laptopRotationDegrees) / maxRotation) * maxPerspectiveAngle * perspectiveMultiplier;
 
-    // Adjust perspective distance based on screen size
-    const perspectiveDistance = isMobile ? 1000 : isTablet ? 1250 : 1500;
-    
-    // Calculate dynamic scale based on rotation and screen size
+    const perspectiveDistance = width <= 480 ? 900 : width <= 768 ? 1000 : width <= 1024 ? 1250 : 1500;
     const scaleBase = Math.cos(Math.abs(laptopRotationDegrees) * (Math.PI / 180));
-    const baseScale = isMobile ? 0.65 : isTablet ? 0.7 : 0.75;
+    const baseScale = width <= 480 ? 0.6 : width <= 768 ? 0.65 : width <= 1024 ? 0.7 : 0.75;
     const scale = baseScale + (scaleBase * 0.25);
-    
     const tiltAngleX = tiltFactor * 15;
-    
-    // Apply enhanced transformation with laptop rotation (inverted)
+
     btn.style.transform = `
       translate(-50%, -50%)
       perspective(${perspectiveDistance}px)
@@ -139,12 +119,9 @@ const SimpleHero = () => {
       rotateX(${tiltAngleX}deg)
       scale(${scale})
     `;
-    
-    // Smooth transitions only for scale and position
     btn.style.transformOrigin = 'center center';
-    btn.style.transition = 'transform 0s';
-    btn.style.transitionProperty = 'scale, translate';
-  }, [screenData, isMobile, isTablet]);
+    btn.style.transition = 'none';
+  }, [screenData]);
 
   return (
     <section className="min-h-screen pt-20 flex flex-col md:flex-row items-center justify-center">
